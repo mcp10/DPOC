@@ -31,19 +31,17 @@ function [ J_opt, u_opt_ind ] = ValueIteration( P, G )
 
 % put your code here
 
-K = length(P(:, 1, 1));
+K = length(stateSpace);
 err = 10^-5; %termination condition
-J_opt_old = zeros(K,1);
-J_opt = ones(K,1);
-u_opt_ind = zeros(K,1);
+cost = zeros(K,1);
+costNew = zeros(K,1);
 
-while abs(J_opt - J_opt_old) > err
+while abs(costNew - cost) > err
     for k = 1:K
-        [J_opt(k), u_opt_ind(k)] = min(G(k, :) + J_opt_old * squeeze(squeeze(P(k, :, :)))); %errore here with squeeze
+        [costNew(k), policy(k)] = min(G(k, :) + cost * squeeze(P(k, :, :)))
     end
-    J_opt_old = J_opt;
+    cost = costNew;
 end
-
 
 
 end

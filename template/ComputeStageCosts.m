@@ -43,5 +43,8 @@ function G = ComputeStageCosts( stateSpace, controlSpace, map, gate, mansion, ca
 %           apply control input l.
 
 % put your code here
+K = length(stateSpace);
+L = length(controlSpace);
+G = ones(K, L);
 
 end
