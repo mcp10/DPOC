@@ -48,11 +48,11 @@ L = length(controlSpace);
 G = inf(K, L);
 
 %Extend map with borders
-extendMap = ones(size(map)+2);
+extendedMap = ones(size(map)+2);
 for i = 1:size(map,1)
     for j = 1:size(map,2)
         value = map(i,j);
-        extendMap(i+1,j+1) = value;        
+        extendedMap(i+1,j+1) = value;        
     end
 end
 
@@ -94,7 +94,7 @@ for k = 1:K
     %photo
     if extendMap(extPosX, extPosY) == 0
         G(k,5) = 1;
-    elseif extendMap(extPosX, extPosY) < 0
+    elseif map(:,:) < 0
         G(k,5) = 4;
     end
 end
