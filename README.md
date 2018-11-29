@@ -4,10 +4,10 @@ Here you will find our programming exercise for the Dynamic Programming and Opti
 
 ## Functions to be implemented
 
-* ComputeTransitionProbabilites: TODO
-* ComputeStageCosts: TODO
-* ValueIteration: TODO
-* PolicyIteration: TODO
-* Linear Programming: TODO
+* ComputeTransitionProbabilites: Done. // TO CHECK
+* ComputeStageCosts: WIP
+* ValueIteration: EDO
+* PolicyIteration: EDO
+* Linear Programming: MAX
 
 ## Sec2
