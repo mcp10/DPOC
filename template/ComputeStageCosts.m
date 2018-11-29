@@ -59,42 +59,41 @@ end
 %Fil G
 for k = 1:K
     %find position on extendedMap
-    extPos = stateSpace(k, :) + 1;
-    extPosX = extPos(1);
-    extPosY = extPos(2);
+    PosX = stateSpace(k, 1) + 1;
+    PosY = stateSpace(k, 2) + 1;
     
     %north
-    if extendMap(extPosX, extPosY + 1) == 0
+    if extendMap(PosY + 1, PosX) == 0
         G(k,1) = 1;
-    elseif extendMap(extPosX, extPosY + 1) < 0
+    elseif extendMap(PosY + 1, PosX) < 0
         G(k,1) = 4;
     end
         
     %south
-    if extendMap(extPosX, extPosY - 1) == 0
+    if extendMap(PosY - 1 , PosX) == 0
         G(k,3) = 1;
-    elseif extendMap(extPosX, extPosY - 1) < 0
+    elseif extendMap(PosY - 1, PosX) < 0
         G(k,3) = 4;
     end
     
     %west
-    if extendMap(extPosX - 1 , extPosY) == 0
+    if extendMap(PosY, PosX - 1) == 0
         G(k,2) = 1;
-    elseif extendMap(extPosX -1 , extPosY) < 0
+    elseif extendMap(PosY, PosX - 1) < 0
         G(k,2) = 4;
     end
     
     %east
-    if extendMap(extPosX + 1, extPosY) == 0
+    if extendMap(PosY, PosX + 1) == 0
         G(k,4) = 1;
-    elseif extendMap(extPosX + 1, extPosY) < 0
+    elseif extendMap(PosY, PosX + 1) < 0
         G(k,4) = 4;
     end
     
     %photo
-    if extendMap(extPosX, extPosY) == 0
+    if extendMap(PosY, PosX) == 0
         G(k,5) = 1;
-    elseif extendMap(extPosX, extPosY) < 0
+    elseif extendMap(PosY, PosX) < 0
         G(k,5) = 4;
     end
 end

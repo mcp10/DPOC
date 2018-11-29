@@ -48,53 +48,52 @@ L = length(controlSpace);
 G = inf(K, L);
 
 %Extend map with borders
-extendedMap = ones(size(map)+2);
+extendMap = ones(size(map)+2);
 for i = 1:size(map,1)
     for j = 1:size(map,2)
         value = map(i,j);
-        extendedMap(i+1,j+1) = value;        
+        extendMap(i+1,j+1) = value;        
     end
 end
 
 %Fil G
 for k = 1:K
     %find position on extendedMap
-    extPos = stateSpace(k, :) + 1;
-    extPosX = extPos(1);
-    extPosY = extPos(2);
+    PosX = stateSpace(k, 1) + 1;
+    PosY = stateSpace(k, 2) + 1;
     
     %north
-    if extendMap(extPosX, extPosY + 1) == 0
+    if extendMap(PosY + 1, PosX) == 0
         G(k,1) = 1;
-    elseif extendMap(extPosX, extPosY + 1) < 0
+    elseif extendMap(PosY + 1, PosX) < 0
         G(k,1) = 4;
     end
         
     %south
-    if extendMap(extPosX, extPosY - 1) == 0
+    if extendMap(PosY - 1 , PosX) == 0
         G(k,3) = 1;
-    elseif extendMap(extPosX, extPosY - 1) < 0
+    elseif extendMap(PosY - 1, PosX) < 0
         G(k,3) = 4;
     end
     
     %west
-    if extendMap(extPosX - 1 , extPosY) == 0
+    if extendMap(PosY, PosX - 1) == 0
         G(k,2) = 1;
-    elseif extendMap(extPosX -1 , extPosY) < 0
+    elseif extendMap(PosX -1 , PosY) < 0
         G(k,2) = 4;
     end
     
     %east
-    if extendMap(extPosX + 1, extPosY) == 0
+    if extendMap(PosX + 1, PosY) == 0
         G(k,4) = 1;
-    elseif extendMap(extPosX + 1, extPosY) < 0
+    elseif extendMap(PosX + 1, PosY) < 0
         G(k,4) = 4;
     end
     
     %photo
-    if extendMap(extPosX, extPosY) == 0
+    if extendMap(PosX, PosY) == 0
         G(k,5) = 1;
-    elseif map(:,:) < 0
+    elseif extendMap(PosX, PosY) < 0
         G(k,5) = 4;
     end
 end
