@@ -30,22 +30,17 @@ function [ J_opt, u_opt_ind ] = PolicyIteration( P, G )
 %       	input for each element of the state space.
 
 % put your code here
-
 K = length(P(:, 1, 1));
+L = length(P(1, 1, :);
 err = 10^-5; %termination condition
 
 %variable intializations
 u_opt_old = ones(K,1) * 5; %always take a pic, this should be feasible
 Prob = zeros(K, K);
-u_opt_ind = zeros(K,1);
-q = zeros(K,1);
+u_opt_ind = ones(K,1) * 10;
 
 
-ERR  = 10;
-iter = 0;
-
-while abs(ERR) > err
-    iter =+ 1;
+while abs(_opt_old) > err
     % policy evaluation
     % solve system of eqn J(i) = q(i) + SUM (P(i,j) * J(j))
     % J = G \ (I-P)
@@ -57,28 +52,35 @@ while abs(ERR) > err
         end
     end
     
-    J_opt = q \ (eye(K) - Prob);
-   
+    J = q \ (eye(K) - Prob);
     
     %policy Improvement
     
     for k = 1:k
         P_k = squeeze(squeeze(P(k, :, :)));
-        [val, u_opt_ind(k)] = min(G(k, :) + J_opt * P_k);
+        u_opt_ind(k) = min(G(k, :) + J' * P_k);
     end
     
     ERR = u_opt_ind - u_opt_old;
     u_opt_old = u_opt_ind;
     
-%     disp('iter')
-%     disp(iter)
-%     disp('u_opt_ind')
-%     disp(u_opt_ind)
     
+    k = 1:K
+    J_opt(1, k) = G(k, u_opt_old(k)) +
     
+    %transition prob matrix (K x L): P_k(j,l)is the trans prob
+    %from state k to state j, if input l is applied
+    P_k = squeeze(squeeze(P(k, :, :)));
+    %the matrix product below represents the SUM operator of the VI
+    %formula
+    [J_opt(1, k), u_opt_ind(k)] = min(G(k, :) + J_opt_old * P_k );
+    
+    %update cost
+    J_opt_old = J_opt;
 end
 
-disp('Policy Iteration, number of iterations: ')
-disp(iter)
+J_opt = J_opt';
+
+
 end
 

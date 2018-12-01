@@ -33,17 +33,25 @@ function [ J_opt, u_opt_ind ] = ValueIteration( P, G )
 
 K = length(P(:, 1, 1));
 err = 10^-5; %termination condition
-J_opt_old = zeros(K,1);
-J_opt = ones(K,1);
+
+%variable intializations
+J_opt_old = zeros(1,K);
+J_opt = ones(1,K);
 u_opt_ind = zeros(K,1);
 
 while abs(J_opt - J_opt_old) > err
     for k = 1:K
-        [J_opt(k), u_opt_ind(k)] = min(G(k, :) + J_opt_old * squeeze(squeeze(P(k, :, :)))); %errore here with squeeze
+        %transition prob matrix (K x L): P_k(j,l)is the trans prob
+        %from state k to state j, if input l is applied
+        P_k = squeeze(squeeze(P(k, :, :)));
+        %the matrix product below represents the SUM operator of the VI
+        %formula
+        [J_opt(1, k), u_opt_ind(k)] = min(G(k, :) + J_opt_old * P_k );
     end
+    %update cost
     J_opt_old = J_opt;
 end
 
-
+J_opt = J_opt';
 
 end
