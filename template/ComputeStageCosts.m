@@ -45,6 +45,57 @@ function G = ComputeStageCosts( stateSpace, controlSpace, map, gate, mansion, ca
 % put your code here
 K = length(stateSpace);
 L = length(controlSpace);
-G = ones(K, L);
+G = inf(K, L);
+
+%Extend map with borders
+extendMap = ones(size(map)+2);
+for i = 1:size(map,1)
+    for j = 1:size(map,2)
+        value = map(i,j);
+        extendMap(i+1,j+1) = value;        
+    end
+end
+
+%Fil G
+for k = 1:K
+    %find position on extendedMap
+    PosX = stateSpace(k, 1) + 1;
+    PosY = stateSpace(k, 2) + 1;
+    
+    %north
+    if extendMap(PosY + 1, PosX) == 0
+        G(k,1) = 1;
+    elseif extendMap(PosY + 1, PosX) < 0
+        G(k,1) = 4;
+    end
+        
+    %south
+    if extendMap(PosY - 1 , PosX) == 0
+        G(k,3) = 1;
+    elseif extendMap(PosY - 1, PosX) < 0
+        G(k,3) = 4;
+    end
+    
+    %west
+    if extendMap(PosY, PosX - 1) == 0
+        G(k,2) = 1;
+    elseif extendMap(PosY, PosX - 1) < 0
+        G(k,2) = 4;
+    end
+    
+    %east
+    if extendMap(PosY, PosX + 1) == 0
+        G(k,4) = 1;
+    elseif extendMap(PosY, PosX + 1) < 0
+        G(k,4) = 4;
+    end
+    
+    %photo
+    if extendMap(PosY, PosX) == 0
+        G(k,5) = 1;
+    elseif extendMap(PosY, PosX) < 0
+        G(k,5) = 4;
+    end
+end
 
 end

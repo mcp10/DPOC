@@ -31,36 +31,15 @@ function [ J_opt, u_opt_ind ] = LinearProgramming( P, G )
 
 % put your code here
 
-
-
-K = length(P(:, 1, 1));
-
-%re - arrange matrix G and P
+%re - arrange matrix G and P in vector
 G_vec = [];
 P_red = [];
-I = [];
 
 for L = 1:length(G(1,:))
     G_vec = [G_vec; G(:,L)];
     P_red = [P_red; P(:,:,L)];
-    I = [I; eye(K)];
 end
 
-%avoid obtaining NaN values in the linprog solver
-inf_index = find(isinf(G_vec));
-G_vec(inf_index) = 10^5;
-
-
-% disp(size(I))
-% disp(size(P_red))
-% disp(size(G_vec))
-
-A = I - P_red;
-f = -1 * ones(1, K);
-J_opt = linprog(f, A, G_vec);
-
-
-u_opt_ind = 0;
 
 end
 

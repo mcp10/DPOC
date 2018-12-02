@@ -45,40 +45,66 @@ ERR  = 10;
 iter = 0;
 
 while abs(ERR) > err
-    iter =+ 1;
-    % policy evaluation
+    iter = iter + 1;
+    %%%%%%%%%%%
+    %%%%%%%%%%% policy evaluation
+    %%%%%%%%%%%
+    
+    
     % solve system of eqn J(i) = q(i) + SUM (P(i,j) * J(j))
-    % J = G \ (I-P)
+    % J = (I-Prob)\G
     
     for k = 1:K
         q(k) = G(k, u_opt_old(k)); %vector of costs with policy u_opt_old
         for k2 = 1:K
-            Prob(k, k2) = P(k, k2 , u_opt_old(k)) ;
+            %matrix used for solving the system of eqn
+            Prob(k, k2) = P(k, k2 , u_opt_old(k));
         end
     end
     
-    J_opt = q \ (eye(K) - Prob);
-   
     
-    %policy Improvement
+    inf_index = find(isinf(q));
+    q(inf_index) = 10^9;
     
-    for k = 1:k
+    %solve the system of eqn
+    J_opt = (eye(K) - Prob) \ q;
+    J_opt = J_opt';
+    disp(J_opt)
+    
+    %%%%%%%%%%%
+    %%%%%%%%%%% policy Improvement
+    %%%%%%%%%%%
+    
+    for k = 1:K
+        %transition prob matrix (K x L): P_k(j,l)is the trans prob
+        %from state k to state j, if input l is applied
         P_k = squeeze(squeeze(P(k, :, :)));
+        %evaluate new policy solving the minimum
         [val, u_opt_ind(k)] = min(G(k, :) + J_opt * P_k);
     end
     
-    ERR = u_opt_ind - u_opt_old;
+    %evaluate error
+    ERR = norm(u_opt_ind - u_opt_old);
+    
+    %policy update for next iteration
     u_opt_old = u_opt_ind;
     
-%     disp('iter')
-%     disp(iter)
-%     disp('u_opt_ind')
-%     disp(u_opt_ind)
     
+    %%%% debugging stuff
+    
+    %     disp('iter')
+    %     disp(iter)
+    %     disp('u_opt_ind')
+    %     disp(u_opt_ind)
+    disp('Error')
+    disp(ERR)
     
 end
 
+J_opt = J_opt';
+
 disp('Policy Iteration, number of iterations: ')
 disp(iter)
+
 end
 

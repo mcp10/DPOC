@@ -44,7 +44,7 @@ iter = 0;
 
 while ERR > err
     
-    iter = iter + 1;
+    iter =+ 1;
     
     for k = 1:K
         %transition prob matrix (K x L): P_k(j,l)is the trans prob
@@ -56,12 +56,11 @@ while ERR > err
     end
     
     ERR = norm(J_opt - J_opt_old);
-    
     %update cost
     J_opt_old = J_opt;
     
-    %     disp('Error')
-    %     disp(ERR)
+    disp('Error')
+    disp(ERR)
 end
 
 J_opt = J_opt';
