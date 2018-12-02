@@ -32,7 +32,7 @@ function [ J_opt, u_opt_ind ] = ValueIteration( P, G )
 % put your code here
 
 K = length(P(:, 1, 1));
-err = 10^-5; %termination condition
+err = 10^-55; %termination condition
 
 %variable intializations
 J_opt_old = zeros(1,K);

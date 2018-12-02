@@ -67,9 +67,9 @@ while abs(ERR) > err
     q(inf_index) = 10^9;
     
     %solve the system of eqn
-    J_opt = (eye(K) - Prob) \ q;
+    J_opt = (eye(K) - Prob)\q;
     J_opt = J_opt';
-    disp(J_opt)
+%     disp(J_opt)
     
     %%%%%%%%%%%
     %%%%%%%%%%% policy Improvement

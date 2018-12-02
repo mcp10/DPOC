@@ -32,8 +32,9 @@ function [ J_opt, u_opt_ind ] = LinearProgramming( P, G )
 % put your code here
 
 
-
 K = length(P(:, 1, 1));
+u_opt_ind = zeros(K,1);
+
 
 %re - arrange matrix G and P
 G_vec = [];
@@ -60,7 +61,11 @@ f = -1 * ones(1, K);
 J_opt = linprog(f, A, G_vec);
 
 
-u_opt_ind = 0;
+for k = 1:K
+    P_k = squeeze(squeeze(P(k, :, :)));
+    [val, u_opt_ind(k)] = min(G(k, :) + J_opt' * P_k );
+end
+
 
 end
 
