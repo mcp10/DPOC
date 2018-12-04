@@ -32,7 +32,7 @@ function [ J_opt, u_opt_ind ] = ValueIteration( P, G )
 % put your code here
 
 K = length(P(:, 1, 1));
-err = 10^-55; %termination condition
+err = 10^-5; %termination condition
 
 %variable intializations
 J_opt_old = zeros(1,K);
@@ -44,7 +44,7 @@ iter = 0;
 
 while ERR > err
     
-    iter = iter + 1;
+    iter =+ 1;
     
     for k = 1:K
         %transition prob matrix (K x L): P_k(j,l)is the trans prob
@@ -56,12 +56,11 @@ while ERR > err
     end
     
     ERR = norm(J_opt - J_opt_old);
-    
     %update cost
     J_opt_old = J_opt;
     
-    %     disp('Error')
-    %     disp(ERR)
+    disp('Error')
+    disp(ERR)
 end
 
 J_opt = J_opt';
