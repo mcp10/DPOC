@@ -16,7 +16,7 @@ for k = 1:K
                 quality = 4 * cameras(c,3);
             end
                       
-            %distance camera - man
+            %distance camera - paparazzi
             distance = sqrt((stateSpace(k,1) - cameras(c,1))^2 + (stateSpace(k,2) - cameras(c,2))^2);
             %check for obstacles in each row (m) along the column bw the
             %point and camera

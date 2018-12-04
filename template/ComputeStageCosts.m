@@ -4,8 +4,8 @@ function G = ComputeStageCosts( stateSpace, controlSpace, map, gate, mansion, ca
 %   control inputs.
 %
 %   G = ComputeStageCosts(stateSpace, controlSpace, map, gate, mansion,
-%   cameras) computes the stage costs for all states in the state space
-%   for all control inputs.
+%   cameras) computes the stage costs for all states in the state space for
+%   all control inputs.
 %
 %   Input arguments:
 %
@@ -31,7 +31,7 @@ function G = ComputeStageCosts( stateSpace, controlSpace, map, gate, mansion, ca
 %           mansion.
 %
 %    	cameras:
-%          	A (H x 3)-matrix indicating the positions and quality of the 
+%          	A (H x 3)-matrix indicating the positions and quality of the
 %           cameras.
 %
 %   Output arguments:
@@ -39,7 +39,7 @@ function G = ComputeStageCosts( stateSpace, controlSpace, map, gate, mansion, ca
 %       G:
 %           A (K x L)-matrix containing the stage costs of all states in
 %           the state space for all control inputs. The entry G(i, l)
-%           represents the expected stage cost if we are in state i and 
+%           represents the expected stage cost if we are in state i and
 %           apply control input l.
 
 % put your code here
@@ -98,7 +98,36 @@ for k = 1:K
     end
 end
 
-%States with disturbances in cost
+
+%States with disturbances in cost due to external camera Busted
+BustedProbabilityMap = BustedMapCreator(stateSpace, map, cameras);
+BustedCost = 6;
+
+%Picture of Paparazzi
+PictureOfCelebrityCost = 0; % Assuming to be the termination cost
+PictureProbabiltyMap = PictureMapCreator(stateSpace, map, mansion);
+
+%Fill G
+for k = 1:K
+    for l = 1:(L-1) 
+        if G(k,1) == Inf
+            continue
+        end
+        G(k,l) = G(k,l)*(1-BustedProbabilityMap(k)) ...
+                + BustedCost*BustedProbabilityMap(k);
+    end
+    for l = L
+        if G(k,1) == Inf
+            continue
+        end
+        G(k,l) = ( G(k,l)*(1-PictureProbabiltyMap(k)) + PictureOfCelebrityCost*PictureProbabiltyMap(k) )*(1-BustedProbabilityMap(k)) ...
+                + BustedCost*BustedProbabilityMap(k);
+    end
+end
+
+
+
+
 
 
 
