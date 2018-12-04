@@ -98,8 +98,7 @@ for k = 1:K
     end
 end
 
-%States with disturbances in cost
-
+%
 
 
 end
