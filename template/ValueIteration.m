@@ -60,8 +60,9 @@ while ERR > err
     %update cost
     J_opt_old = J_opt;
     
-    %     disp('Error')
-    %     disp(ERR)
+%     disp(iter)
+%     disp('Error')
+%     disp(ERR)
 end
 
 J_opt = J_opt';
