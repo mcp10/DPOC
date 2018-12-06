@@ -105,7 +105,7 @@ for k = 1:length(BustedMap)
         
     end
 end
-Result = [BustedMap stateSpace] %uncomment to check the above function
+% Result = [BustedMap stateSpace] %uncomment to check the above function
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,6 +149,12 @@ for k = 1:K
             % apply probability
             PictureMap(k) = max(PictureMap(k), quality / distance);
         end
+        
+        % probability do no excede 1
+        if PictureMap(k) > 1
+            PictureMap(k) = 1;
+        end
+        
     end
 end
 
