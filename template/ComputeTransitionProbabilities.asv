@@ -51,6 +51,7 @@ P = zeros(K, K, length(controlSpace));
 %map of states with 0 if not on the line or column of camera or P_busted
 %if on same line
 BustedMap = zeros(K,1);
+
 for k = 1:length(BustedMap)
     for c = 1:size(cameras(:,1))
         %check if point is on the same column as camera
@@ -64,13 +65,13 @@ for k = 1:length(BustedMap)
                 quality = 4 * cameras(c,3);
             end
             
-            %distance camera - paparazzi
+            %distance camera - man
             distance = sqrt((stateSpace(k,1) - cameras(c,1))^2 + (stateSpace(k,2) - cameras(c,2))^2);
             %check for obstacles in each row (m) along the column bw the
             %point and camera
             for m = (min(cameras(c,2),stateSpace(k,2))+1):(max(cameras(c,2),stateSpace(k,2))-1)
                 %if obstacle in bw, set quality to 0
-                if any( map(m, stateSpace(k,1)) > 0 )
+                if map(m, stateSpace(k,1)) > 0
                     quality = 0;
                     break
                 end
@@ -83,29 +84,21 @@ for k = 1:length(BustedMap)
         %check if point is on the same line as camera
         if  stateSpace(k,2) == cameras(c,2)
             quality = cameras(c,3);
-            
-            %distance camera - paparazzi
             distance = sqrt((stateSpace(k,1) - cameras(c,1))^2 + (stateSpace(k,2) - cameras(c,2))^2);
             for m = (min(cameras(c,1),stateSpace(k,1))+1):(max(cameras(c,1),stateSpace(k,1))-1)
-                if any( map(stateSpace(k,2),m) > 0 )
-                    %no need to check other rows if an obstacle is found,
-                    %you can break (exit) the loop
+                if map(stateSpace(k,2),m)>0
                     quality = 0;
+                    %no need to check other rows if an obstacle is found,
+                    %you can just break (exit) the loop
                     break
                 end
             end
             % apply probability
-            BustedMap(k) = BustedMap(k) + quality / distance;         
+            BustedMap(k) = BustedMap(k) + quality / distance;
         end
-        
-        %check that probability do not excede 1
-        if BustedMap(k) > 1
-            BustedMap(k) = 1;
-        end
-        
     end
 end
-Result = [BustedMap stateSpace] %uncomment to check the above function
+% Result = [BustedMap stateSpace] %uncomment to check the above function
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -124,7 +117,7 @@ for k = 1:K
             %point and camera
             for n = (min(mansion(m,2),stateSpace(k,2))+1):(max(mansion(m,2),stateSpace(k,2))-1)
                 %if obstacle in bw, set quality to 0
-                if any ( map(n, stateSpace(k,1)) > 0 )
+                if map(n, stateSpace(k,1)) > 0
                     quality = 0;
                     break
                 end
@@ -139,7 +132,7 @@ for k = 1:K
             quality = 0.5;
             distance = sqrt((stateSpace(k,1) - mansion(m,1))^2 + (stateSpace(k,2) - mansion(m,2))^2);
             for n = (min(mansion(m,1),stateSpace(k,1))+1):(max(mansion(m,1),stateSpace(k,1))-1)
-                if any( map(stateSpace(k,2),n) > 0 )
+                if map(stateSpace(k,2),n)>0
                     quality = 0;
                     %no need to check other rows if an obstacle is found,
                     %you can just break (exit) the loop
