@@ -164,10 +164,7 @@ BustedCost = 6;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Picture of Paparazzi
-PictureOfCelebrityCost = 0; % Assuming to be the termination cost
-
 PictureMap = 0.001*ones(K,1);
-
 for k = 1:K
     for m = 1:size(mansion(:,1))
         %check if point is on the same column as mansion
@@ -208,12 +205,13 @@ for k = 1:K
     end
 end
 
-DispVec = [PictureMap, stateSpace(:, :)]; %debug
+DispVec = [PictureMap, stateSpace(:, :)] %debug
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+PictureOfCelebCost = 0; % Assuming to be the termination cost
 
-%Fill G
+%Fill Cost Matrix G
 iter = 0;
 for k = 1:K
     iter = iter +1;
@@ -229,7 +227,6 @@ for k = 1:K
             end
         end
         
-        
         if p == 2 %west
             if G(k,p) ~= Inf
                 ind = find(stateSpace(:,1) == stateSpace(k,1)-1 & stateSpace(:,2) == stateSpace(k,2));
@@ -237,7 +234,6 @@ for k = 1:K
                     + BustedCost * BustedMap(ind);
             end
         end
-        
         
         if p == 3 %south
             if G(k,p) ~= Inf
@@ -247,8 +243,7 @@ for k = 1:K
             end
         end
         
-        
-        if p == 4%east
+        if p == 4 %east
             if G(k,p) ~= Inf
                 ind = find(stateSpace(:,1) == stateSpace(k,1)+1 & stateSpace(:,2) == stateSpace(k,2));
                 G(k,p) = G(k,p)*(1- BustedMap(ind)) ...
@@ -258,16 +253,16 @@ for k = 1:K
         
         if p == L
             if G(k,p) ~= Inf
-                G(k,p) = G(k,p)*(1-PictureMap(k)-(BustedMap(k) * (1 - PictureMap(k))))...
-                    + PictureOfCelebrityCost*PictureMap(k) ...
-                    + BustedCost*(BustedMap(k)*(1-PictureMap(k)));
+                G(k,p) = BustedMap(k) * BustedCost ...
+                    + (1-BustedMap(k)) * (1-PictureMap(k)) * G(k,p) ...
+                    + (1-BustedMap(k)) * PictureMap(k) * PictureOfCelebCost;
             end
         end
     end
 end
 
 
-DispVec = [G(:,5), stateSpace(:, :)]; %for debugging
+DispVec = [G(:,5), stateSpace(:, :)] %for debugging
 
 
 end

@@ -54,11 +54,11 @@ while abs(ERR) > err
     % solve system of eqn J(i) = q(i) + SUM (P(i,j) * J(j))
     % J = (I-Prob)\G
     
-    for k = 1:K
-        q(k) = G(k, u_opt_old(k)); %vector of costs with policy u_opt_old
+    for k1 = 1:K
+        q(k1) = G(k1, u_opt_old(k1)); %vector of costs with policy u_opt_old
         for k2 = 1:K
             %matrix used for solving the system of eqn
-            Prob(k, k2) = P(k, k2 , u_opt_old(k));
+            Prob(k1, k2) = P(k1, k2 , u_opt_old(k1));
         end
     end
     
@@ -75,12 +75,12 @@ while abs(ERR) > err
     %%%%%%%%%%% policy Improvement
     %%%%%%%%%%%
     
-    for k = 1:K
+    for k1 = 1:K
         %transition prob matrix (K x L): P_k(j,l)is the trans prob
         %from state k to state j, if input l is applied
-        P_k = squeeze(squeeze(P(k, :, :)));
+        P_k = squeeze(squeeze(P(k1, :, :)));
         %evaluate new policy solving the minimum
-        [val, u_opt_ind(k)] = min(G(k, :) + J_opt * P_k);
+        [val, u_opt_ind(k1)] = min(G(k1, :) + J_opt * P_k);
     end
     
     %evaluate error

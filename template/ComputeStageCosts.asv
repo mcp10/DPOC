@@ -101,7 +101,6 @@ end
 
 %map of states with 0 if not on the line or column of camera or P_busted
 %if on same line
-
 BustedMap = zeros(K,1);
 for k = 1:length(BustedMap)
     for c = 1:size(cameras(:,1))
@@ -165,10 +164,7 @@ BustedCost = 6;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Picture of Paparazzi
-PictureOfCelebrityCost = 0; % Assuming to be the termination cost
-
 PictureMap = 0.001*ones(K,1);
-
 for k = 1:K
     for m = 1:size(mansion(:,1))
         %check if point is on the same column as mansion
@@ -209,12 +205,13 @@ for k = 1:K
     end
 end
 
-DispVec = [PictureMap, stateSpace(:, :)]; %debug
+DispVec = [PictureMap, stateSpace(:, :)] %debug
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+PictureOfCelebrityCost = 0; % Assuming to be the termination cost
 
-%Fill G
+%Fill Cost Matrix G
 iter = 0;
 for k = 1:K
     iter = iter +1;
@@ -249,7 +246,7 @@ for k = 1:K
         end
         
         
-        if p == 4%east
+        if p == 4 %east
             if G(k,p) ~= Inf
                 ind = find(stateSpace(:,1) == stateSpace(k,1)+1 & stateSpace(:,2) == stateSpace(k,2));
                 G(k,p) = G(k,p)*(1- BustedMap(ind)) ...
@@ -262,6 +259,10 @@ for k = 1:K
                 G(k,p) = G(k,p)*(1-PictureMap(k)-(BustedMap(k) * (1 - PictureMap(k))))...
                     + PictureOfCelebrityCost*PictureMap(k) ...
                     + BustedCost*(BustedMap(k)*(1-PictureMap(k)));
+                
+                G(k,p) = BustedMap(k) * BustedCost ...
+                    + (1-BustedMap(k)) * (1-PictureMap(k)) * G(k,p) ...
+                    + 
             end
         end
     end
