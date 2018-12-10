@@ -102,7 +102,6 @@ end
 %map of states with 0 if not on the line or column of camera or P_busted
 %if on same line
 BustedMap = zeros(K,1);
-
 for k = 1:length(BustedMap)
     for c = 1:size(cameras(:,1))
         %check if point is on the same column as camera
@@ -115,14 +114,14 @@ for k = 1:length(BustedMap)
             if ret2 %if pond, increase prob of cameras by 4
                 quality = 4 * cameras(c,3);
             end
-                      
-            %distance camera - man
+            
+            %distance camera - paparazzi
             distance = sqrt((stateSpace(k,1) - cameras(c,1))^2 + (stateSpace(k,2) - cameras(c,2))^2);
             %check for obstacles in each row (m) along the column bw the
             %point and camera
             for m = (min(cameras(c,2),stateSpace(k,2))+1):(max(cameras(c,2),stateSpace(k,2))-1)
                 %if obstacle in bw, set quality to 0
-                if map(m, stateSpace(k,1)) > 0
+                if any( map(m, stateSpace(k,1)) > 0 )
                     quality = 0;
                     break
                 end
@@ -132,23 +131,32 @@ for k = 1:length(BustedMap)
             BustedMap(k) = BustedMap(k) + quality / distance;
         end
         
-        % same comments as above for this for loop
+        %check if point is on the same line as camera
         if  stateSpace(k,2) == cameras(c,2)
             quality = cameras(c,3);
+            
+            %distance camera - paparazzi
             distance = sqrt((stateSpace(k,1) - cameras(c,1))^2 + (stateSpace(k,2) - cameras(c,2))^2);
             for m = (min(cameras(c,1),stateSpace(k,1))+1):(max(cameras(c,1),stateSpace(k,1))-1)
-                if map(stateSpace(k,2),m)>0
-                    quality = 0;
+                if any( map(stateSpace(k,2),m) > 0 )
                     %no need to check other rows if an obstacle is found,
-                    %you can just break (exit) the loop
+                    %you can break (exit) the loop
+                    quality = 0;
                     break
                 end
             end
             % apply probability
-            BustedMap(k) = BustedMap(k) + quality / distance;
+            BustedMap(k) = BustedMap(k) + quality / distance;         
         end
+        
+        %check that probability do not excede 1
+        if BustedMap(k) > 1
+            BustedMap(k) = 1;
+        end
+        
     end
 end
+
 
 % Result = [BustedMap stateSpace] %uncomment to check the above function
 BustedCost = 6;
@@ -156,10 +164,7 @@ BustedCost = 6;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Picture of Paparazzi
-PictureOfCelebrityCost = 0; % Assuming to be the termination cost
-
 PictureMap = 0.001*ones(K,1);
-
 for k = 1:K
     for m = 1:size(mansion(:,1))
         %check if point is on the same column as mansion
@@ -200,12 +205,13 @@ for k = 1:K
     end
 end
 
-DispVec = [PictureMap, stateSpace(:, :)]; %debug
+DispVec = [PictureMap, stateSpace(:, :)] %debug
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+PictureOfCelebCost = 0; % Assuming to be the termination cost
 
-%Fill G
+%Fill Cost Matrix G
 iter = 0;
 for k = 1:K
     iter = iter +1;
@@ -221,7 +227,6 @@ for k = 1:K
             end
         end
         
-        
         if p == 2 %west
             if G(k,p) ~= Inf
                 ind = find(stateSpace(:,1) == stateSpace(k,1)-1 & stateSpace(:,2) == stateSpace(k,2));
@@ -230,7 +235,6 @@ for k = 1:K
             end
         end
         
-        
         if p == 3 %south
             if G(k,p) ~= Inf
                 ind = find(stateSpace(:,2) == stateSpace(k,2)-1 & stateSpace(:,1) == stateSpace(k,1));
@@ -238,8 +242,7 @@ for k = 1:K
                     + BustedCost * BustedMap(ind);
             end
         end
-        
-        
+
         if p == 4 %east
             if G(k,p) ~= Inf
                 ind = find(stateSpace(:,1) == stateSpace(k,1)+1 & stateSpace(:,2) == stateSpace(k,2));
@@ -250,16 +253,17 @@ for k = 1:K
         
         if p == L
             if G(k,p) ~= Inf
-                G(k,p) = G(k,p)*(1-PictureMap(k)) * (1 - BustedMap(k))... % fail to take a pic and not get busted
-                    + PictureOfCelebrityCost*PictureMap(k) ... %case in which he manages to take a pic
-                    + BustedCost*(BustedMap(k)*(1-PictureMap(k))); %fail to take a pic and get busted
+                G(k,p) = PictureMap(k) * PictureOfCelebCost ... %take pic celebrity
+                    + (1 - PictureMap(k)) * BustedMap(k) * BustedCost ... %fail to take pic and get busted
+                    + (1 - PictureMap(k)) * (1 - BustedMap(k)) * G(k,p); %fail to take pic and not get busted
+
             end
         end
     end
 end
 
 
-DispVec = [G(:,5), stateSpace(:, :)]; %for debugging
+DispVec = [G(:,5), stateSpace(:, :)] %for debugging
 
 
 end
