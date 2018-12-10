@@ -209,7 +209,7 @@ DispVec = [PictureMap, stateSpace(:, :)] %debug
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-PictureOfCelebrityCost = 0; % Assuming to be the termination cost
+PictureOfCelebCost = 0; % Assuming to be the termination cost
 
 %Fill Cost Matrix G
 iter = 0;
@@ -227,7 +227,6 @@ for k = 1:K
             end
         end
         
-        
         if p == 2 %west
             if G(k,p) ~= Inf
                 ind = find(stateSpace(:,1) == stateSpace(k,1)-1 & stateSpace(:,2) == stateSpace(k,2));
@@ -236,7 +235,6 @@ for k = 1:K
             end
         end
         
-        
         if p == 3 %south
             if G(k,p) ~= Inf
                 ind = find(stateSpace(:,2) == stateSpace(k,2)-1 & stateSpace(:,1) == stateSpace(k,1));
@@ -244,7 +242,6 @@ for k = 1:K
                     + BustedCost * BustedMap(ind);
             end
         end
-        
         
         if p == 4 %east
             if G(k,p) ~= Inf
@@ -256,20 +253,17 @@ for k = 1:K
         
         if p == L
             if G(k,p) ~= Inf
-                G(k,p) = G(k,p)*(1-PictureMap(k)-(BustedMap(k) * (1 - PictureMap(k))))...
-                    + PictureOfCelebrityCost*PictureMap(k) ...
-                    + BustedCost*(BustedMap(k)*(1-PictureMap(k)));
-                
-                G(k,p) = BustedMap(k) * BustedCost ...
+                G(k,p) = Pic
+                BustedMap(k) * BustedCost ...
                     + (1-BustedMap(k)) * (1-PictureMap(k)) * G(k,p) ...
-                    + 
+                    + (1-BustedMap(k)) * PictureMap(k) * PictureOfCelebCost;
             end
         end
     end
 end
 
 
-DispVec = [G(:,5), stateSpace(:, :)]; %for debugging
+DispVec = [G(:,5), stateSpace(:, :)] %for debugging
 
 
 end

@@ -253,9 +253,9 @@ for k = 1:K
         
         if p == L
             if G(k,p) ~= Inf
-                G(k,p) = BustedMap(k) * BustedCost ...
-                    + (1-BustedMap(k)) * (1-PictureMap(k)) * G(k,p) ...
-                    + (1-BustedMap(k)) * PictureMap(k) * PictureOfCelebCost;
+                G(k,p) = PictureMap(k) * PictureOfCelebCost ... %take pic celebrity
+                    + (1 - PictureMap(k)) * BustedMap(k) * BustedCost ... %fail to take pic and get busted
+                    + (1 - PictureMap(k)) * (1 - BustedMap(k)) * G(k,p); %fail to take pic and not get busted
             end
         end
     end
