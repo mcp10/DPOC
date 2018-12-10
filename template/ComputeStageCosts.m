@@ -240,7 +240,7 @@ for k = 1:K
         end
         
         
-        if p == 4%east
+        if p == 4 %east
             if G(k,p) ~= Inf
                 ind = find(stateSpace(:,1) == stateSpace(k,1)+1 & stateSpace(:,2) == stateSpace(k,2));
                 G(k,p) = G(k,p)*(1- BustedMap(ind)) ...
@@ -250,9 +250,9 @@ for k = 1:K
         
         if p == L
             if G(k,p) ~= Inf
-                G(k,p) = G(k,p)*(1-PictureMap(k)-(BustedMap(k) * (1 - PictureMap(k))))...
-                    + PictureOfCelebrityCost*PictureMap(k) ...
-                    + BustedCost*(BustedMap(k)*(1-PictureMap(k)));
+                G(k,p) = G(k,p)*(1-PictureMap(k)) * (1 - BustedMap(k))... % fail to take a pic and not get busted
+                    + PictureOfCelebrityCost*PictureMap(k) ... %case in which he manages to take a pic
+                    + BustedCost*(BustedMap(k)*(1-PictureMap(k))); %fail to take a pic and get busted
             end
         end
     end
