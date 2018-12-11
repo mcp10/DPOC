@@ -62,9 +62,9 @@ while abs(ERR) > err
         end
     end
     
-    
-    inf_index = find(isinf(q));
-    q(inf_index) = 10^9;
+    %replace inf with a very high number, in case you receive errors
+%     inf_index = find(isinf(q));
+%     q(inf_index) = 10^9;
     
     %solve the system of eqn
     J_opt = (eye(K) - Prob)\q;
@@ -96,15 +96,19 @@ while abs(ERR) > err
     %     disp(iter)
     %     disp('u_opt_ind')
     %     disp(u_opt_ind)
-    disp('Error')
-    disp(ERR)
+%     disp('Error')
+%     disp(ERR)
     
 end
 
 J_opt = J_opt';
 
+fprintf('\n')
+fprintf('\n')
 disp('Policy Iteration, number of iterations: ')
 disp(iter)
+disp('Policy Iteration, final error: ')
+disp(ERR)
 
 end
 
