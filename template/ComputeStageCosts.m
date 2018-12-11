@@ -1,5 +1,6 @@
 function G = ComputeStageCosts( stateSpace, controlSpace, map, gate, mansion, cameras )
 %COMPUTESTAGECOSTS Compute stage costs.
+% G_mine = ComputeStageCosts( stateSpace, controlSpace, map, gate, mansion, cameras );
 % 	Compute the stage costs for all states in the state space for all
 %   control inputs.
 %
@@ -94,7 +95,7 @@ for k = 1:K
     if extendMap(PosY, PosX) == 0
         G(k,5) = 1;
     elseif extendMap(PosY, PosX) < 0
-        G(k,5) = 4;
+        G(k,5) = 1;
     end
 end
 
@@ -102,7 +103,6 @@ end
 %map of states with 0 if not on the line or column of camera or P_busted
 %if on same line
 BustedMap = zeros(K,1);
-
 for k = 1:length(BustedMap)
     
     %check if stateSpace is a pond
@@ -206,7 +206,7 @@ end
 
 
 % Result = [BustedMap stateSpace] %uncomment to check the above function
-BustedCost = 6;
+BustedCost = 7;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -252,23 +252,26 @@ for k = 1:K
     end
 end
 
-DispVec = [PictureMap, stateSpace(:, :)] %debug
+DispVec = [PictureMap, stateSpace(:, :)]; %debug
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-PictureOfCelebCost = 0; % Assuming to be the termination cost
-
+PictureOfCelebCost = 1; % Assuming to be the termination cost
+% PictureMap = zeros(K,1);
 %Fill Cost Matrix G
 iter = 0;
-for k = 1:K
+for k = 1:K %iter over each point of state space
     iter = iter +1;
     
-    for p = 1:L
+    for p = 1:L %iter over each command (matrix layer)
         
         if p == 1 %north
-            if G(k,p) ~= Inf
+            if G(k,p) ~= Inf %if not inf, i.e. if accessible
                 
+                %find index of stateSpace of the cell where I am going to
+                %move
                 ind = find(stateSpace(:,2) == stateSpace(k,2)+1 & stateSpace(:,1) == stateSpace(k,1));
+                
                 G(k,p) = G(k,p)*(1-BustedMap(ind)) ...
                     + BustedCost* BustedMap(ind);
             end
@@ -300,7 +303,7 @@ for k = 1:K
         
         if p == L
             if G(k,p) ~= Inf
-                G(k,p) = PictureMap(k) * PictureOfCelebCost ... %take pic celebrity
+                G(k,p) = PictureMap(k) * PictureOfCelebCost ... %take pic celebrity, this line = 0
                     + (1 - PictureMap(k)) * BustedMap(k) * BustedCost ... %fail to take pic and get busted
                     + (1 - PictureMap(k)) * (1 - BustedMap(k)) * G(k,p); %fail to take pic and not get busted
 
@@ -310,7 +313,7 @@ for k = 1:K
 end
 
 
-DispVec = [G(:,5), stateSpace(:, :)] %for debugging
+DispVec = [G(:,5), stateSpace(:, :)]; %for debugging
 
 
 end

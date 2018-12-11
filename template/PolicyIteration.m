@@ -96,15 +96,19 @@ while abs(ERR) > err
     %     disp(iter)
     %     disp('u_opt_ind')
     %     disp(u_opt_ind)
-    disp('Error')
-    disp(ERR)
+%     disp('Error')
+%     disp(ERR)
     
 end
 
 J_opt = J_opt';
 
+fprintf('\n')
+fprintf('\n')
 disp('Policy Iteration, number of iterations: ')
 disp(iter)
+disp('Policy Iteration, final error: ')
+disp(ERR)
 
 end
 

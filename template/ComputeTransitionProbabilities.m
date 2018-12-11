@@ -1,4 +1,5 @@
 function P = ComputeTransitionProbabilities( stateSpace, controlSpace, map, gate, mansion, cameras )
+% P_mine = ComputeTransitionProbabilities( stateSpace, controlSpace, map, gate, mansion, cameras );
 %COMPUTETRANSITIONPROBABILITIES Compute transition probabilities.
 % 	Compute the transition probabilities between all states in the state
 %   space for all control inputs.
@@ -210,7 +211,7 @@ for k = 1:K
     
 end
 
-DispVec = [PictureMap, stateSpace(:, :)] %debug
+DispVec = [PictureMap, stateSpace(:, :)]; %debug
 %disp(PictureMap(64))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -223,38 +224,50 @@ for k1 = 1:K
         if stateSpace(k1, 1) == stateSpace(k2, 1) && stateSpace(k2,2) == stateSpace(k1, 2) + 1
             P(k1,k2,1) = 1 - BustedMap(k2);
             P(k1,gatePos,1) = BustedMap(k2);  %prob of being sent to the gate
+            if k2 == gatePos
+                P(k1,gatePos,1) = 1;
+            end
+            
         end
         
         %if on same row and 1 step before (layer w)
         if stateSpace(k1, 2) == stateSpace(k2, 2) && stateSpace(k2,1) == stateSpace(k1, 1) - 1
             P(k1,k2,2) = 1 - BustedMap(k2);
             P(k1,gatePos,2) = BustedMap(k2);  %prob of being sent to the gate
+            if k2 == gatePos
+                P(k1,gatePos,2) = 1;
+            end
         end
         
         %if on same column and if 1 step below (layer s)
         if stateSpace(k1, 1) == stateSpace(k2, 1) && stateSpace(k2,2) == stateSpace(k1, 2) - 1
             P(k1,k2,3) = 1 - BustedMap(k2);
             P(k1,gatePos,3) = BustedMap(k2);  %prob of being sent to the gate
+            if k2 == gatePos
+                P(k1,gatePos,3) = 1;
+            end
         end
         
         %if on same row and 1 step after (layer e)
         if stateSpace(k1, 2) == stateSpace(k2, 2) && stateSpace(k2,1) == stateSpace(k1, 1) + 1
             P(k1,k2,4) = 1 - BustedMap(k2);
             P(k1,gatePos,4) = BustedMap(k2);  %prob of being sent to the gate
+            if k2 == gatePos
+                P(k1,gatePos,4) = 1;
+            end
         end
         
         %taking a picture
         %if on same cell
         if k1 == k2
-            P(k1,k2,5) = 1 - (BustedMap(k2) * (1 - PictureMap(k1))) - (PictureMap(k1)); %need to include (- prob of catching celebrity) here?
+            %             P(k1,k2,5) = 1 - (BustedMap(k2) * (1 - PictureMap(k1))) - (PictureMap(k1)); %need to include (- prob of catching celebrity) here?
+            P(k1,k2,5) = (1 - PictureMap(k1)) * (1 - BustedMap(k2));
+            P(k1,gatePos,5) = BustedMap(k1) * (1 - PictureMap(k1));
+            if k2 == gatePos
+                P(k1,gatePos,5) = 1 - PictureMap(k1);
+            end
         end
-        
     end
-    P(k1,gatePos,5) = BustedMap(k1) * (1 - PictureMap(k1));
-    if k1 == gatePos
-        P(k1,gatePos,5) = (1 - PictureMap(k1));
-    end
-    
 end
 
 
