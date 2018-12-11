@@ -62,9 +62,9 @@ while abs(ERR) > err
         end
     end
     
-    
-    inf_index = find(isinf(q));
-    q(inf_index) = 10^9;
+    %replace inf with a very high number, in case you receive errors
+%     inf_index = find(isinf(q));
+%     q(inf_index) = 10^9;
     
     %solve the system of eqn
     J_opt = (eye(K) - Prob)\q;

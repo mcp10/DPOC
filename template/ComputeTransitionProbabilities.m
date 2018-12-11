@@ -266,9 +266,12 @@ for k1 = 1:K
             if k2 == gatePos
                 P(k1,gatePos,5) = 1 - PictureMap(k1);
             end
-        end
+        end 
     end
 end
 
+if find(P>1)
+    disp('A value of P is greater than 1, check your matrix')
+end
 
 end
