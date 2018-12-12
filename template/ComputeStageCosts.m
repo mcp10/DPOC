@@ -99,6 +99,7 @@ for k = 1:K
     end
 end
 
+DispVec = [G stateSpace];%debug
 
 %map of states with 0 if not on the line or column of camera or P_busted
 %if on same line
